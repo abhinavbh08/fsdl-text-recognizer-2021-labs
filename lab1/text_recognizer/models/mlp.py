@@ -36,8 +36,9 @@ class MLP(nn.Module):
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         x = F.relu(x)
-        x = self.dropout(x)
-        x = self.fc2(x)
+        y = self.dropout(x)
+        x = self.fc2(y)
+        x = x + y
         x = F.relu(x)
         x = self.dropout(x)
         x = self.fc3(x)

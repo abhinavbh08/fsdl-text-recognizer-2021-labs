@@ -7,6 +7,9 @@ import torch
 import pytorch_lightning as pl
 import wandb
 
+import sys
+sys.path.append("/home/abhinav/Documents/fsdl-text-recognizer-2021-labs/lab1")
+
 from text_recognizer import lit_models
 
 
