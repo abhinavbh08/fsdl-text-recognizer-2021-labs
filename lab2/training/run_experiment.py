@@ -6,8 +6,11 @@ import numpy as np
 import torch
 import pytorch_lightning as pl
 import wandb
+import sys
+sys.path.append('.')
 
 from text_recognizer import lit_models
+
 
 
 # In order to ensure reproducible experiments, we must set random seeds.

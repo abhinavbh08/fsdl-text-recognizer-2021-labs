@@ -4,11 +4,41 @@ import argparse
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.modules.activation import ReLU
 
 
 CONV_DIM = 64
 FC_DIM = 128
 IMAGE_SIZE = 28
+
+
+class ConvBlockResidual(nn.Module):
+    """
+    Simple 3x3 convolutions with padding size 1, and a residual connection. 
+    """
+
+    def __init__(self, input_channels: int, output_channels: int) -> None:
+        super().__init__()
+        self.conv1 = nn.Conv2d(input_channels, output_channels, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(output_channels, output_channels, kernel_size=3, stride=1, padding=1)
+        self.relu = nn.ReLU()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Parameters
+        ----------
+        x
+            of dimensions (B, C, H, W)
+
+        Returns
+        -------
+        torch.Tensor
+            of dimensions (B, C, H, W)
+        """
+        r = self.conv1(x)
+        p = self.relu(r)
+        final = self.conv2(p)
+        return x + final
 
 
 class ConvBlock(nn.Module):
@@ -52,7 +82,8 @@ class CNN(nn.Module):
         fc_dim = self.args.get("fc_dim", FC_DIM)
 
         self.conv1 = ConvBlock(input_dims[0], conv_dim)
-        self.conv2 = ConvBlock(conv_dim, conv_dim)
+        # self.conv2 = ConvBlock(conv_dim, conv_dim)
+        self.conv2 = ConvBlockResidual(conv_dim, conv_dim)
         self.dropout = nn.Dropout(0.25)
         self.max_pool = nn.MaxPool2d(2)
 
