@@ -21,6 +21,7 @@ class ConvBlockResidual(nn.Module):
         super().__init__()
         self.conv1 = nn.Conv2d(input_channels, output_channels, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(output_channels, output_channels, kernel_size=3, stride=1, padding=1)
+        self.bn = nn.BatchNorm2d(output_channels)
         self.relu = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -37,6 +38,7 @@ class ConvBlockResidual(nn.Module):
         """
         identity = x
         x = self.conv1(x)
+        x = self.bn(x)
         x = self.relu(x)
         x = self.conv2(x)
         x = x + identity
@@ -52,6 +54,7 @@ class ConvBlock(nn.Module):
     def __init__(self, input_channels: int, output_channels: int) -> None:
         super().__init__()
         self.conv = nn.Conv2d(input_channels, output_channels, kernel_size=3, stride=1, padding=1)
+        self.bn = nn.BatchNorm2d(output_channels)
         self.relu = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -67,6 +70,7 @@ class ConvBlock(nn.Module):
             of dimensions (B, C, H, W)
         """
         c = self.conv(x)
+        c = self.bn(c)
         r = self.relu(c)
         return r
 
