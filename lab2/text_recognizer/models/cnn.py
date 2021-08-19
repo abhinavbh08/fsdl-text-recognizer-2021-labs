@@ -88,7 +88,8 @@ class CNN(nn.Module):
         # self.conv2 = ConvBlock(conv_dim, conv_dim)
         self.conv2 = ConvBlockResidual(conv_dim, conv_dim)
         self.dropout = nn.Dropout(0.25)
-        self.max_pool = nn.MaxPool2d(2)
+        # self.max_pool = nn.MaxPool2d(2)
+        self.strided_conv = nn.Conv2d(conv_dim, conv_dim, kernel_size=3, stride=2, padding=1)
 
         # Because our 3x3 convs have padding size 1, they leave the input size unchanged.
         # The 2x2 max-pool divides the input size by 2. Flattening squares it.
@@ -112,7 +113,7 @@ class CNN(nn.Module):
         assert H == W == IMAGE_SIZE
         x = self.conv1(x)
         x = self.conv2(x)
-        x = self.max_pool(x)
+        x = self.strided_conv(x)
         x = self.dropout(x)
         x = torch.flatten(x, 1)
         x = self.fc1(x)

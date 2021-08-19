@@ -74,7 +74,6 @@ def main():
     model_class = _import_class(f"text_recognizer.models.{args.model_class}")
     data = data_class(args)
     model = model_class(data_config=data.config(), args=args)
-
     if args.loss not in ("ctc", "transformer"):
         lit_model_class = lit_models.BaseLitModel
 
