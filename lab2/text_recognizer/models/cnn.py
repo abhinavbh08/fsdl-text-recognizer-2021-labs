@@ -35,10 +35,13 @@ class ConvBlockResidual(nn.Module):
         torch.Tensor
             of dimensions (B, C, H, W)
         """
-        r = self.conv1(x)
-        p = self.relu(r)
-        final = self.conv2(p)
-        return x + final
+        identity = x
+        x = self.conv1(x)
+        x = self.relu(x)
+        x = self.conv2(x)
+        x = x + identity
+        x = self.relu(x)
+        return x
 
 
 class ConvBlock(nn.Module):
